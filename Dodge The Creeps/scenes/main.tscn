@@ -1,0 +1,56 @@
+[gd_scene load_steps=6 format=3 uid="uid://dsumix4p2g1wd"]
+
+[ext_resource type="Script" path="res://scenes/main.cs" id="1_0aa67"]
+[ext_resource type="PackedScene" uid="uid://d2w2hcmm3rjrb" path="res://scenes/player.tscn" id="1_8fy7x"]
+[ext_resource type="PackedScene" uid="uid://ciii40e4x8ae4" path="res://scenes/mob.tscn" id="2_dm2da"]
+[ext_resource type="PackedScene" uid="uid://b1acruld4rbnp" path="res://scenes/hud.tscn" id="4_25hky"]
+
+[sub_resource type="Curve2D" id="Curve2D_auuol"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 480, 0, 0, 0, 0, 0, 480, 720, 0, 0, 0, 0, 0, 720, 0, 0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_0aa67")
+MobScene = ExtResource("2_dm2da")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 480.0
+offset_bottom = 720.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.381728, 0.589882, 0.579967, 1)
+
+[node name="Player" parent="." instance=ExtResource("1_8fy7x")]
+
+[node name="Timer" type="Node2D" parent="."]
+
+[node name="MobTimer" type="Timer" parent="Timer"]
+wait_time = 0.5
+
+[node name="ScoreTimer" type="Timer" parent="Timer"]
+
+[node name="StartTimer" type="Timer" parent="Timer"]
+wait_time = 2.0
+one_shot = true
+
+[node name="StartPosition" type="Marker2D" parent="."]
+position = Vector2(240, 450)
+
+[node name="MobPath" type="Path2D" parent="."]
+curve = SubResource("Curve2D_auuol")
+
+[node name="MobSpawnLocation" type="PathFollow2D" parent="MobPath"]
+
+[node name="HUD" parent="." instance=ExtResource("4_25hky")]
+
+[connection signal="Hit" from="Player" to="." method="GameOver"]
+[connection signal="timeout" from="Timer/MobTimer" to="." method="MobTimerTimeout"]
+[connection signal="timeout" from="Timer/ScoreTimer" to="." method="ScoreTimerTimeout"]
+[connection signal="timeout" from="Timer/StartTimer" to="." method="StartTimerTimeout"]
+[connection signal="ChangeColour" from="HUD" to="." method="SetColor"]
+[connection signal="StartGame" from="HUD" to="." method="NewGame"]
