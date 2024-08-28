@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://byrnvhng3gh20"]
+
+[node name="QuitDialog" type="ConfirmationDialog"]
+title = "Confirmation"
+initial_position = 1
+size = Vector2i(200, 80)
+ok_button_text = "No"
+dialog_text = "Quit?"
+cancel_button_text = "Yes"

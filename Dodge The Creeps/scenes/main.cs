@@ -9,9 +9,9 @@ public partial class main : Node2D
 
     private int _score;
     public HUD hud;
-
     public override void _Ready()
     {
+        Input.MouseMode = Input.MouseModeEnum.Visible;
         GetNode<player>("Player").Hide();
         hud = GetNode<HUD>("HUD");
         SetColor();
@@ -22,12 +22,12 @@ public partial class main : Node2D
         var rect = GetNode<ColorRect>("Background");
         rect.Color = Color.Color8(((byte)GD.RandRange(75, 130)), ((byte)GD.RandRange(75, 130)), ((byte)GD.RandRange(75, 130)));
     }
-    public void GameOver()
+    public void GameOver(bool t)
     {
         GetNode<Timer>("Timer/MobTimer").Stop();
         GetNode<Timer>("Timer/ScoreTimer").Stop();
 
-        hud.ShowGameOver();
+        hud.ShowGameOver(t);
     }
     public void NewGame()
     {
@@ -37,10 +37,23 @@ public partial class main : Node2D
         var pos = GetNode<Marker2D>("StartPosition");
         player.Start(pos.Position);
 
+        Input.MouseMode = Input.MouseModeEnum.Captured;
+
         GetNode<Timer>("Timer/StartTimer").Start();
         hud.UpdateScore(_score);
         hud.ShowMessage("Get Ready!");
         GetTree().CallGroup("mobs", Node.MethodName.QueueFree);
+    }
+
+    public void PauseGame()
+    {
+        if (GetNode<Timer>("Timer/ScoreTimer").TimeLeft > 0 && Engine.TimeScale != 0)
+        {
+            Engine.TimeScale = 0;
+            GetNode<Control>("HUD/PauseMenu").Show();
+            GetNode<Button>("HUD/PauseMenu/ResumeButton").GrabFocus();
+            Input.MouseMode = Input.MouseModeEnum.Visible;
+        }
     }
 
     private void ScoreTimerTimeout()

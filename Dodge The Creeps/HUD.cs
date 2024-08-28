@@ -8,6 +8,8 @@ public partial class HUD : CanvasLayer
     public delegate void StartGameEventHandler();
     [Signal] 
     public delegate void ChangeColourEventHandler();
+    [Signal]
+    public delegate void MenuEventHandler();
 
     public Timer timer;
     public Label message;
@@ -15,6 +17,7 @@ public partial class HUD : CanvasLayer
     {
         timer = GetNode<Timer>("MessageTimer");
         message = GetNode<Label>("Message");
+        GetNode<Button>("StartButton").GrabFocus();
     }
     
     public void ShowMessage(string text)
@@ -25,19 +28,24 @@ public partial class HUD : CanvasLayer
         timer.Start();
     }
 
-    async public void ShowGameOver()
+    async public void ShowGameOver(bool t)
     {
-        ShowMessage("Game Over!");
-        await ToSignal(timer, Timer.SignalName.Timeout);
-
+        if (t)
+        {
+            ShowMessage("Game Over!");
+            await ToSignal(timer, Timer.SignalName.Timeout);
+        }
         message.Text = "Dodge the Creeps!";
         message.Show();
         GetNode<Button>("ChangeColour").Show();
-        GetNode<Button>("QuitButton").Show();
 
         await ToSignal(GetTree().CreateTimer(1.0), SceneTreeTimer.SignalName.Timeout);
+        Input.MouseMode = Input.MouseModeEnum.Visible;
         GetNode<Button>("StartButton").Show();
+        GetNode<Button>("QuitButton").Show();
+        GetNode<Button>("StartButton").GrabFocus();
     }
+
     public void UpdateScore(int score)
     {
         GetNode<Label>("ScoreLabel").Text = score.ToString();
@@ -65,5 +73,11 @@ public partial class HUD : CanvasLayer
     private void OnMessageTimerTimeout()
     {
         message.Hide();
+    }
+    public void ResumeGame()
+    {
+        Engine.TimeScale = 1.0;
+        GetNode<Control>("PauseMenu").Hide();
+        Input.MouseMode = Input.MouseModeEnum.Captured;
     }
 }

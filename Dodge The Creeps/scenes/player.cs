@@ -4,7 +4,9 @@ using System;
 public partial class player : Area2D
 {
     [Signal]
-    public delegate void HitEventHandler();
+    public delegate void HitEventHandler(bool t = true);
+    [Signal]
+    public delegate void PauseEventHandler();
 
     [Export]
     public int Speed { get; set; } = 400;
@@ -36,15 +38,18 @@ public partial class player : Area2D
             Sprite.Stop();
         }
 
-        if (velocity.X != 0)
+        if (Engine.TimeScale != 0)
         {
-            Sprite.Animation = "walk";
-            Sprite.FlipH = velocity.X < 0;
-        }
-        else if (velocity.Y != 0)
-        {
-            Sprite.Animation = "up";
-            Sprite.FlipV = velocity.Y > 0;
+            if (velocity.X != 0)
+            {
+                Sprite.Animation = "walk";
+                Sprite.FlipH = velocity.X < 0;
+            }
+            else if (velocity.Y != 0)
+            {
+                Sprite.Animation = "up";
+                Sprite.FlipV = velocity.Y > 0;
+            }
         }
 
         Position += velocity * (float)delta;
@@ -52,15 +57,30 @@ public partial class player : Area2D
             x: Mathf.Clamp(Position.X, 0, ScreenSize.X),
             y: Mathf.Clamp(Position.Y, 0, ScreenSize.Y)
         );
+
+        if (Input.IsActionJustPressed("pause"))
+        {
+            EmitSignal(SignalName.Pause);
+        }
     }
 
     private void OnBodyEntered(Node2D body)
     {
-        Hide();
-        EmitSignal(SignalName.Hit);
-        GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred(CollisionShape2D.PropertyName.Disabled, true);
+        Delete(true);
     }
 
+    public void ReturnToMenu()
+    {
+        Delete(false);
+    }
+
+    public void Delete(bool t)
+    {
+        Hide();
+        EmitSignal(SignalName.Hit, t);
+        GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred(CollisionShape2D.PropertyName.Disabled, true);
+    }
+    
     public void Start(Vector2 position)
     {
         Position = position;
