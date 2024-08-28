@@ -8,7 +8,8 @@
 ## Images
 
 <p align="center">
-<img src="https://github.com/AkarshChauhan15/Dodge-The-Creeps/blob/main/Images/Start%26Quit.PNG" alt="Start and Quit" width="300px">
+<img src="https://github.com/AkarshChauhan15/Dodge-The-Creeps/blob/main/Images/Start.JPG" alt="Start Menu" width="300px">
 <img src="https://github.com/AkarshChauhan15/Dodge-The-Creeps/blob/main/Images/Gameplay.jpg" alt="Gameplay" width="300px">
+ <img src="https://github.com/AkarshChauhan15/Dodge-The-Creeps/blob/main/Images/PauseMenu.JPG" alt="Pause Menu" width="300px">
 <img src="https://github.com/AkarshChauhan15/Dodge-The-Creeps/blob/main/Images/Gameover.jpg" alt="Gameover" width="300px">
 </p>
